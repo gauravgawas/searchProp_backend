@@ -30,3 +30,20 @@ export const loginUser = async (req, res, next) => {
     next(error);
   }
 };
+
+export const payment = async (req, res, next) => {
+  try {
+    console.log(req.body);
+    let upiId = req.body.UpiId;
+    let paymentRes = {
+      status: "success",
+      details: {
+        Mode: "upi",
+        UpiId: upiId,
+      },
+    };
+    res.status(200).json(paymentRes);
+  } catch (error) {
+    next(error);
+  }
+};
