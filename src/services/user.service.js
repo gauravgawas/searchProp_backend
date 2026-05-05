@@ -1,4 +1,10 @@
 import * as userRepo from "../repositories/user.repository.js";
+import bcrypt from "bcrypt";
+
+const hashPassword = async (password) => {
+  const saltRounds = parseInt(process.env.PASSWORD_SALT_ROUNDS, 10) || 10;
+  return await bcrypt.hash(password, saltRounds);
+};
 
 export const registerUser = async (userData) => {
   if (await userRepo.existsByEmail(userData.email)) {
@@ -8,7 +14,7 @@ export const registerUser = async (userData) => {
     throw new Error("Username already exists");
   }
 
-  const hashedPassword = `hashed_${userData.password}`; // Implement password hashing here
+  const hashedPassword = await hashPassword(userData.password);
   const user = await userRepo.save({ ...userData, password: hashedPassword });
   return user;
 };
@@ -19,9 +25,12 @@ export const loginUser = async (userData) => {
   if (!user) {
     throw new Error("User not found");
   }
-  const hashedPassword = `hashed_${userData.password}`;
-  if (user.password !== hashedPassword) {
+
+  const isMatch = await bcrypt.compare(userData.password, user.password);
+
+  if (!isMatch) {
     throw new Error("Invalid password");
   }
+
   return user;
 };
