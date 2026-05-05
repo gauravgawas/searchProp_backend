@@ -1,6 +1,7 @@
 import express from "express";
 import userRoutes from "./src/routes/user.routes.js";
 import geometryRoutes from "./src/routes/geometry.routes.js";
+import otherRoutes from "./src/routes/other.routes.js";
 import errorHandler from "./src/middlewares/errorHandler.middleware.js";
 import cors from "cors";
 // import errorMiddleware from "./middlewares/error.middleware.js";
@@ -10,6 +11,7 @@ app.use(cors());
 app.use(express.json());
 app.use("/api/users", userRoutes);
 app.use("/api/geometry", geometryRoutes);
+app.use("/api", otherRoutes);
 app.use(errorHandler);
 
 export default app;
