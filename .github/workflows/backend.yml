@@ -21,7 +21,13 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             cd /home/ec2-user/searchProp_backend
-            git pull origin main
+            git fetch --all
+            git reset --hard origin/main
+            git clean -fd
+
+
             npm install
-            npm run build
-            pm2 restart server
+
+            pm2 delete server || true
+            pm2 start server.js
+            pm2 save
