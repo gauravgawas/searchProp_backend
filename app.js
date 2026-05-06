@@ -7,6 +7,7 @@ import cors from "cors";
 // import errorMiddleware from "./middlewares/error.middleware.js";
 
 const app = express();
+app.set("trust proxy", true);
 app.use(cors());
 app.use(express.json());
 app.use("/api/users", userRoutes);
