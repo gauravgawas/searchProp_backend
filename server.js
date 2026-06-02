@@ -5,10 +5,11 @@ dotenv.config();
 
 const PORT = process.env.PORT || 3000;
 
+const credentials = process.env.GOOGLE_APPLICATION_CREDENTIALS;
 // CX client
 const client = new SessionsClient({
   apiEndpoint: "us-central1-dialogflow.googleapis.com",
-  keyFilename: "./searchprop-495615-ac4b365bbdad.json",
+  keyFilename: credentials,
 });
 const projectId = "searchprop-495615";
 const location = "us-central1";
