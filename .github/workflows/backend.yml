@@ -1,9 +1,10 @@
+```yaml
 name: Backend Deploy
 
 on:
   push:
     branches:
-      - main # or your branch
+      - main
 
 jobs:
   deploy:
@@ -11,23 +12,30 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: SSH into EC2 and deploy
+      - name: Deploy backend to AWS Lightsail
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.EC2_SSH_KEY }}
+          host: ${{ secrets.LIGHTSAIL_HOST }}
+          username: ${{ secrets.LIGHTSAIL_USER }}
+          key: ${{ secrets.LIGHTSAIL_SSH_KEY }}
           script: |
-            cd /home/ec2-user/searchProp_backend
-            git fetch --all
+            set -e
+
+            cd /var/www/searchprop-backend
+
+            git fetch origin
             git reset --hard origin/main
             git clean -fd
 
+            npm ci --omit=dev
 
-            npm install
+            if pm2 describe searchprop-backend > /dev/null 2>&1; then
+              pm2 restart searchprop-backend --update-env
+            else
+              pm2 start server.js --name searchprop-backend
+            fi
 
-            pm2 delete server || true
-            pm2 start server.js
             pm2 save
+```
