@@ -1,4 +1,3 @@
-```yaml
 name: Backend Deploy
 
 on:
@@ -38,4 +37,3 @@ jobs:
             fi
 
             pm2 save
-```
